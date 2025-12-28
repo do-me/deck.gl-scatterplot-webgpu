@@ -158,18 +158,87 @@ removeBtn.addEventListener('click', () => {
     }
 });
 
-// --- Mobile UI Toggles ---
+// --- Mobile UI Drawer Logic ---
 const controlPanel = document.getElementById('control-panel');
-const panelToggle = document.getElementById('panel-toggle');
-const closePanel = document.getElementById('close-panel');
+const dragHandle = document.querySelector('.drag-handle');
 
-panelToggle.addEventListener('click', () => {
-    controlPanel.classList.add('open');
-});
+let startY = 0;
+let currentY = 0;
+let isDragging = false;
+let panelHeight = 0;
 
-closePanel.addEventListener('click', () => {
-    controlPanel.classList.remove('open');
-});
+function setPanelTranslate(y) {
+    controlPanel.style.transform = `translateY(${y}px)`;
+}
+
+function updatePanelState(isOpen) {
+    controlPanel.classList.toggle('open', isOpen);
+    controlPanel.style.transform = ''; // Clear inline styles to let CSS take over
+}
+
+// Gesture Handling
+function onTouchStart(e) {
+    if (window.innerWidth > 768) return;
+
+    // Only allow dragging from handle or header area to avoid conflict with content scroll
+    const touchY = e.touches[0].clientY;
+    const panelRect = controlPanel.getBoundingClientRect();
+
+    // Check if touch is in the top portion of the panel
+    if (touchY - panelRect.top > 80) return;
+
+    startY = touchY;
+    panelHeight = panelRect.height;
+    isDragging = true;
+    controlPanel.style.transition = 'none'; // Instant feedback
+}
+
+function onTouchMove(e) {
+    if (!isDragging) return;
+
+    const touchY = e.touches[0].clientY;
+    const deltaY = touchY - startY;
+
+    // Calculate new position
+    // If open (translateY = 0), deltaY > 0 moves down (closing)
+    // If closed (translateY = height - 60), deltaY < 0 moves up (opening)
+    const isCurrentlyOpen = controlPanel.classList.contains('open');
+    const baseTranslate = isCurrentlyOpen ? 0 : (panelHeight - 60);
+    let newTranslate = baseTranslate + deltaY;
+
+    // Bounds: don't push too high or too low
+    newTranslate = Math.max(0, Math.min(newTranslate, panelHeight - 60));
+
+    setPanelTranslate(newTranslate);
+    currentY = newTranslate;
+
+    // Prevent background scrolling
+    if (e.cancelable) e.preventDefault();
+}
+
+function onTouchEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    controlPanel.style.transition = ''; // Restore smooth CSS transition
+
+    const isCurrentlyOpen = controlPanel.classList.contains('open');
+    const threshold = panelHeight * 0.3; // 30% of height needed to toggle
+
+    if (isCurrentlyOpen) {
+        // Closing: if moved more than 30% down, close it
+        updatePanelState(currentY < threshold);
+    } else {
+        // Opening: if moved more than 30% up from closed state
+        const closedPos = panelHeight - 60;
+        updatePanelState(currentY < closedPos - threshold);
+    }
+}
+
+// Attach listeners to the panel itself for broad hit area, 
+// filtered by onTouchStart's position check
+controlPanel.addEventListener('touchstart', onTouchStart, { passive: false });
+window.addEventListener('touchmove', onTouchMove, { passive: false });
+window.addEventListener('touchend', onTouchEnd);
 
 // --- Drag and Drop ---
 

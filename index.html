@@ -36,42 +36,29 @@
       z-index: 1000;
       width: 320px;
       backdrop-filter: blur(12px);
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       border: 1px solid rgba(255, 255, 255, 0.3);
+      user-select: none;
+      touch-action: none;
+      /* Disable native scroll on the panel while dragging */
     }
 
-    /* Mobile Toggle Button */
-    #panel-toggle {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      z-index: 999;
-      background: #0078ff;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 48px;
-      height: 48px;
+    /* Drag Handle for Mobile */
+    .drag-handle {
+      width: 40px;
+      height: 4px;
+      background: #ccc;
+      border-radius: 2px;
+      margin: 0 auto 16px;
       display: none;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      cursor: pointer;
+      cursor: grab;
+      flex-shrink: 0;
     }
 
-    /* Close Button for Mobile */
-    #close-panel {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      display: none;
-      background: none;
-      border: none;
-      color: #999;
-      cursor: pointer;
-      padding: 5px;
-      width: auto;
+    .drag-handle:active {
+      cursor: grabbing;
     }
+
 
     h2 {
       margin-top: 0;
@@ -238,8 +225,8 @@
 
     /* Mobile Specific Overrides */
     @media (max-width: 768px) {
-      #panel-toggle {
-        display: flex;
+      .drag-handle {
+        display: block;
       }
 
       #control-panel {
@@ -248,19 +235,16 @@
         left: 0;
         width: 100%;
         border-radius: 24px 24px 0 0;
-        transform: translateY(100%);
+        transform: translateY(calc(100% - 60px));
+        /* Peak of handle/header */
         box-sizing: border-box;
-        padding-bottom: 40px;
-        /* Space for home indicator */
+        padding: 12px 24px 40px;
       }
 
       #control-panel.open {
-        transform: translateY(0);
+        transform: translateY(0) !important;
       }
 
-      #close-panel {
-        display: block;
-      }
 
       h2 {
         padding-right: 30px;
@@ -276,20 +260,9 @@
 <body>
   <div id="map"></div>
 
-  <button id="panel-toggle" title="Open Settings">
-    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-      <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
-    </svg>
-  </button>
-
   <div id="control-panel" class="open">
-    <button id="close-panel" title="Close Panel">
-      <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-        <path
-          d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-      </svg>
-    </button>
-    <h2>Scatterplot Controls</h2>
+    <div class="drag-handle"></div>
+    <h2>WebGPU Scatterplot Demo (deck.gl)</h2>
     <div class="input-group">
       <label for="point-count">Generate Points</label>
       <input type="text" id="point-count" placeholder="1,000,000" value="1,000,000" inputmode="numeric">
