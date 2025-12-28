@@ -139,6 +139,11 @@ generateBtn.addEventListener('click', () => {
         updateLayer(data);
         generateBtn.innerText = 'Generate';
         generateBtn.disabled = false;
+
+        // Auto-close on mobile after generation
+        if (window.innerWidth <= 768) {
+            controlPanel.classList.remove('open');
+        }
     }, 10);
 });
 
@@ -146,6 +151,24 @@ const removeBtn = document.getElementById('remove-btn');
 removeBtn.addEventListener('click', () => {
     currentData = null;
     updateLayer([]);
+
+    // Auto-close on mobile after removal
+    if (window.innerWidth <= 768) {
+        controlPanel.classList.remove('open');
+    }
+});
+
+// --- Mobile UI Toggles ---
+const controlPanel = document.getElementById('control-panel');
+const panelToggle = document.getElementById('panel-toggle');
+const closePanel = document.getElementById('close-panel');
+
+panelToggle.addEventListener('click', () => {
+    controlPanel.classList.add('open');
+});
+
+closePanel.addEventListener('click', () => {
+    controlPanel.classList.remove('open');
 });
 
 // --- Drag and Drop ---

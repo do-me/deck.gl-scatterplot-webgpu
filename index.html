@@ -29,64 +29,130 @@
       position: absolute;
       top: 20px;
       left: 20px;
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.9);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-      z-index: 10;
-      width: 300px;
-      backdrop-filter: blur(4px);
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      border-radius: 16px;
+      z-index: 1000;
+      width: 320px;
+      backdrop-filter: blur(12px);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* Mobile Toggle Button */
+    #panel-toggle {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 999;
+      background: #0078ff;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+    }
+
+    /* Close Button for Mobile */
+    #close-panel {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      display: none;
+      background: none;
+      border: none;
+      color: #999;
+      cursor: pointer;
+      padding: 5px;
+      width: auto;
     }
 
     h2 {
       margin-top: 0;
-      font-size: 18px;
-      color: #333;
+      font-size: 20px;
+      font-weight: 800;
+      color: #1a1a1a;
+      letter-spacing: -0.5px;
     }
 
     .input-group {
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
     label {
       display: block;
-      margin-bottom: 5px;
-      font-size: 14px;
-      font-weight: 600;
-      color: #666;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #444;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     input[type="text"] {
       width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      padding: 12px 16px;
+      border: 2px solid #eee;
+      border-radius: 12px;
       box-sizing: border-box;
-      font-size: 14px;
+      font-size: 16px;
+      /* Prevents iOS auto-zoom */
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #0078ff;
     }
 
     button {
       width: 100%;
-      padding: 10px;
+      padding: 14px;
       background: #0078ff;
       color: white;
       border: none;
-      border-radius: 4px;
+      border-radius: 12px;
       cursor: pointer;
-      font-weight: 600;
-      transition: background 0.2s;
+      font-weight: 700;
+      font-size: 15px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(0, 120, 255, 0.2);
     }
 
     button:hover {
       background: #0062cc;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(0, 120, 255, 0.3);
+    }
+
+    button:active {
+      transform: translateY(0);
     }
 
     #status {
       margin-top: 15px;
-      font-size: 12px;
-      color: #666;
-      border-top: 1px solid #eee;
-      padding-top: 10px;
+      font-size: 13px;
+      color: #555;
+      background: #f8f9fa;
+      padding: 12px;
+      border-radius: 8px;
+    }
+
+    #status div {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    #status span {
+      font-weight: 700;
+      color: #000;
     }
 
     #drop-zone {
@@ -95,13 +161,14 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 120, 255, 0.2);
+      background: rgba(0, 120, 255, 0.15);
       border: 4px dashed #0078ff;
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 100;
+      z-index: 10000;
       pointer-events: none;
+      backdrop-filter: blur(4px);
     }
 
     #drop-zone.active {
@@ -110,17 +177,17 @@
 
     #drop-zone span {
       font-size: 32px;
-      font-weight: bold;
+      font-weight: 800;
       color: #0078ff;
       background: white;
-      padding: 20px 40px;
-      border-radius: 40px;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+      padding: 24px 48px;
+      border-radius: 50px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
     }
 
     .button-group {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       margin-bottom: 15px;
     }
 
@@ -130,26 +197,25 @@
 
     #remove-btn {
       background: #ff4d4f;
-      flex: 0 0 50px;
-      padding: 10px 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      flex: 0 0 54px;
+      padding: 14px 0;
+      box-shadow: 0 4px 12px rgba(255, 77, 79, 0.2);
     }
 
     #remove-btn:hover {
       background: #ff7875;
+      box-shadow: 0 6px 16px rgba(255, 77, 79, 0.3);
     }
 
     .author-info {
-      margin-top: 15px;
+      margin-top: 20px;
       border-top: 1px solid #eee;
-      padding-top: 10px;
+      padding-top: 15px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 13px;
-      color: #333;
+      font-size: 14px;
+      font-weight: 500;
     }
 
     .author-info a {
@@ -157,12 +223,52 @@
       text-decoration: none;
       display: flex;
       align-items: center;
+      transition: color 0.2s;
+    }
+
+    .author-info a:hover {
+      color: #0078ff;
     }
 
     .author-info svg {
-      width: 20px;
-      height: 20px;
-      margin-left: 8px;
+      width: 22px;
+      height: 22px;
+      margin-left: 10px;
+    }
+
+    /* Mobile Specific Overrides */
+    @media (max-width: 768px) {
+      #panel-toggle {
+        display: flex;
+      }
+
+      #control-panel {
+        top: auto;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        border-radius: 24px 24px 0 0;
+        transform: translateY(100%);
+        box-sizing: border-box;
+        padding-bottom: 40px;
+        /* Space for home indicator */
+      }
+
+      #control-panel.open {
+        transform: translateY(0);
+      }
+
+      #close-panel {
+        display: block;
+      }
+
+      h2 {
+        padding-right: 30px;
+      }
+
+      .author-info {
+        padding-bottom: 10px;
+      }
     }
   </style>
 </head>
@@ -170,11 +276,23 @@
 <body>
   <div id="map"></div>
 
-  <div id="control-panel">
-    <h2>WebGPU-Scatterplot (deck.gl)</h2>
+  <button id="panel-toggle" title="Open Settings">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+      <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+    </svg>
+  </button>
+
+  <div id="control-panel" class="open">
+    <button id="close-panel" title="Close Panel">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+        <path
+          d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+      </svg>
+    </button>
+    <h2>Scatterplot Controls</h2>
     <div class="input-group">
-      <label for="point-count">Generate Points (e.g. 10,000,000)</label>
-      <input type="text" id="point-count" placeholder="50,000,000" value="1,000,000">
+      <label for="point-count">Generate Points</label>
+      <input type="text" id="point-count" placeholder="1,000,000" value="1,000,000" inputmode="numeric">
     </div>
     <div class="button-group">
       <button id="generate-btn">Generate</button>
@@ -188,9 +306,9 @@
       <div>Points: <span id="count-display">0</span></div>
       <div>Load time: <span id="time-display">-</span></div>
     </div>
-    <p style="font-size: 11px; color: #888; margin-top: 10px;">
-      Tip: Drag & Drop a JSON file anywhere to load your own data. Expects this format:<br>
-      [[65.279,86.838,1],[131.162,-21.818,2],...]
+    <p style="font-size: 11px; color: #888; margin-top: 15px; line-height: 1.4;">
+      Tip: Drag & Drop a JSON file anywhere to load your own data. Format:
+      <code>[[lon,lat,val],...]</code>
     </p>
 
     <div class="author-info">
