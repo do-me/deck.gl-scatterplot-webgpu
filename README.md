@@ -1,6 +1,8 @@
 # deck.gl-scatterplot-webgpu
 
-Vanilla JS deck.gl WebGPU-Scatterplot demo for performance testing. Based on https://deck.gl/examples/scatterplot-layer. Generates the points on the fly in JS or parses a JSON file. Works up to 260 points on a 128Gb M3 Max. More info here: https://www.linkedin.com/in/dominik-weckm%C3%BCller/recent-activity/all/
+**App here: https://do-me.github.io/deck.gl-scatterplot-webgpu/**
+
+Vanilla JS deck.gl WebGPU-Scatterplot demo for performance testing. Based on https://deck.gl/examples/scatterplot-layer. Generates the points on the fly in JS or parses a JSON file. Works up to 260M points on a 128Gb M3 Max. More info here: https://www.linkedin.com/in/dominik-weckm%C3%BCller/recent-activity/all/
 
 Creates an overlay of red and blue points with random coordinates over the world:
 
