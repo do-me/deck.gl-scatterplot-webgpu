@@ -262,7 +262,7 @@
 
   <div id="control-panel" class="open">
     <div class="drag-handle"></div>
-    <h2>WebGPU Scatterplot Demo (deck.gl)</h2>
+    <h2>deck.gl Scatterplot Demo</h2>
     <div class="input-group">
       <label for="point-count">Generate Points</label>
       <input type="text" id="point-count" placeholder="1,000,000" value="1,000,000" inputmode="numeric">
@@ -275,9 +275,12 @@
         </svg>
       </button>
     </div>
+    <button id="backend-toggle" style="background:#444; margin-bottom:15px;">Switch to WebGL</button>
     <div id="status">
+      <div>Backend: <span id="backend-display">WEBGPU</span></div>
       <div>Points: <span id="count-display">0</span></div>
       <div>Load time: <span id="time-display">-</span></div>
+      <div>FPS: <span id="fps-display">-</span></div>
     </div>
     <p style="font-size: 11px; color: #888; margin-top: 15px; line-height: 1.4;">
       Tip: Drag & Drop a JSON file anywhere to load your own data. Format:

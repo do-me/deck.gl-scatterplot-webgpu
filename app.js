@@ -3,6 +3,7 @@ import { MapboxOverlay as DeckOverlay } from '@deck.gl/mapbox';
 import { ScatterplotLayer } from '@deck.gl/layers';
 import maplibregl from 'maplibre-gl';
 import { webgpuAdapter } from '@luma.gl/webgpu';
+import { webgl2Adapter } from '@luma.gl/webgl';
 
 // --- Configuration ---
 const INITIAL_VIEW_STATE = {
@@ -30,15 +31,34 @@ const map = new maplibregl.Map({
 });
 
 // --- Initialize Deck Context ---
-const deckOverlay = new DeckOverlay({
-    deviceProps: {
-        adapters: [webgpuAdapter]
-    },
-    layers: []
-});
+let currentBackend = 'webgpu';
+let deckOverlay;
 
+function createDeckOverlay(backend) {
+    return new DeckOverlay({
+        deviceProps: {
+            adapters: [backend === 'webgpu' ? webgpuAdapter : webgl2Adapter]
+        },
+        layers: []
+    });
+}
+
+deckOverlay = createDeckOverlay(currentBackend);
 map.addControl(deckOverlay);
 map.addControl(new maplibregl.NavigationControl());
+
+function setBackend(backend) {
+    if (backend === currentBackend) return;
+    currentBackend = backend;
+    map.removeControl(deckOverlay);
+    deckOverlay = createDeckOverlay(backend);
+    map.addControl(deckOverlay);
+    document.getElementById('backend-display').innerText = backend.toUpperCase();
+    document.getElementById('backend-toggle').innerText =
+        backend === 'webgpu' ? 'Switch to WebGL' : 'Switch to WebGPU';
+    // Rebuild layers from raw data on the new device
+    if (currentData) updateLayer(currentData);
+}
 
 // --- Core Logic ---
 
@@ -84,21 +104,22 @@ function updateLayer(data) {
 function generatePoints(count) {
     const startTime = performance.now();
     const positions = new Float32Array(count * 2);
-    const colors = new Uint8Array(count * 3);
+    const colors = new Uint8Array(count * 4);
 
     // Use a simpler distribution for speed: full world
     for (let i = 0; i < count; i++) {
         const i2 = i * 2;
-        const i3 = i * 3;
+        const i4 = i * 4;
 
         // Random worldwide coordinates
         positions[i2] = (Math.random() - 0.5) * 360;
         positions[i2 + 1] = (Math.random() - 0.5) * 170; // Stay within map range
 
-        // Random colors
-        colors[i3] = Math.random() * 255;
-        colors[i3 + 1] = Math.random() * 255;
-        colors[i3 + 2] = Math.random() * 255;
+        // Random colors (RGBA)
+        colors[i4] = Math.random() * 255;
+        colors[i4 + 1] = Math.random() * 255;
+        colors[i4 + 2] = Math.random() * 255;
+        colors[i4 + 3] = 255;
     }
 
     const endTime = performance.now();
@@ -108,10 +129,28 @@ function generatePoints(count) {
         length: count,
         attributes: {
             getPosition: { value: positions, size: 2 },
-            getFillColor: { value: colors, size: 3 }
+            getFillColor: { value: colors, size: 4 }
         }
     };
 }
+
+// --- FPS Counter ---
+const fpsDisplay = document.getElementById('fps-display');
+let fpsFrames = 0;
+let fpsLastUpdate = performance.now();
+
+function fpsTick() {
+    fpsFrames++;
+    const now = performance.now();
+    const elapsed = now - fpsLastUpdate;
+    if (elapsed >= 500) {
+        fpsDisplay.innerText = Math.round((fpsFrames * 1000) / elapsed);
+        fpsFrames = 0;
+        fpsLastUpdate = now;
+    }
+    requestAnimationFrame(fpsTick);
+}
+requestAnimationFrame(fpsTick);
 
 // --- UI Interaction ---
 
@@ -145,6 +184,11 @@ generateBtn.addEventListener('click', () => {
             controlPanel.classList.remove('open');
         }
     }, 10);
+});
+
+const backendToggle = document.getElementById('backend-toggle');
+backendToggle.addEventListener('click', () => {
+    setBackend(currentBackend === 'webgpu' ? 'webgl' : 'webgpu');
 });
 
 const removeBtn = document.getElementById('remove-btn');
